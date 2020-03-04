@@ -7,7 +7,7 @@ from conans import ConanFile, CMake, tools
 class LibPCLConan(ConanFile):
     name = "pcl"
     upstream_version = "1.9.1"
-    package_revision = "-r5"
+    package_revision = "-r6"
     version = "{0}{1}".format(upstream_version, package_revision)
 
     generators = "cmake"
@@ -49,10 +49,10 @@ class LibPCLConan(ConanFile):
 
     def requirements(self):
         self.requires("common/1.0.2@sight/stable")
-        self.requires("qt/5.12.4-r2@sight/stable")
+        self.requires("qt/5.14.1@sight/testing")
         self.requires("eigen/3.3.7-r3@sight/stable")
         self.requires("boost/1.69.0-r4@sight/stable")
-        self.requires("vtk/8.2.0-r4@sight/stable")
+        self.requires("vtk/8.2.0-r5@sight/testing")
         self.requires("openni/2.2.0-r5@sight/stable")
         self.requires("flann/1.9.1-r5@sight/stable")
 
