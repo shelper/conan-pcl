@@ -6,8 +6,8 @@ from conans import ConanFile, CMake, tools
 
 class LibPCLConan(ConanFile):
     name = "pcl"
-    upstream_version = "1.9.1"
-    package_revision = "-r6"
+    upstream_version = "1.10.1"
+    package_revision = ""
     version = "{0}{1}".format(upstream_version, package_revision)
 
     generators = "cmake"
@@ -23,13 +23,6 @@ class LibPCLConan(ConanFile):
         "cuda=None"
     ]
     default_options = tuple(default_options)
-    exports = [
-        "patches/clang_macos.diff",
-        "patches/kinfu.diff",
-        "patches/pcl_eigen.diff",
-        "patches/pcl_gpu_error.diff",
-        "patches/point_cloud.diff"
-    ]
     url = "https://git.ircad.fr/conan/conan-pcl"
     license = "BSD License"
     description = "The Point Cloud Library is for 2D/3D image and point cloud processing."
@@ -41,8 +34,6 @@ class LibPCLConan(ConanFile):
             del self.options.fPIC
 
     def configure(self):
-        # PCL is not well prepared for c++ standard > 11...
-        del self.settings.compiler.cppstd
 
         if 'CI' not in os.environ:
             os.environ["CONAN_SYSREQUIRES_MODE"] = "verify"
@@ -71,7 +62,7 @@ class LibPCLConan(ConanFile):
 
     def source(self):
         tools.get(
-            "https://github.com/PointCloudLibrary/pcl/archive/pcl-{0}.tar.gz".format(
+            "https://github.com/IRCAD-IHU/pcl/archive/pcl-{0}.tar.gz".format(
                 self.upstream_version))
         os.rename(
             "pcl-pcl-{0}".format(self.upstream_version),
@@ -80,11 +71,6 @@ class LibPCLConan(ConanFile):
     def build(self):
         pcl_source_dir = os.path.join(
             self.source_folder, self.source_subfolder)
-        tools.patch(pcl_source_dir, "patches/clang_macos.diff")
-        tools.patch(pcl_source_dir, "patches/kinfu.diff")
-        tools.patch(pcl_source_dir, "patches/pcl_eigen.diff")
-        tools.patch(pcl_source_dir, "patches/pcl_gpu_error.diff")
-        tools.patch(pcl_source_dir, "patches/point_cloud.diff")
 
         # patch for cuda arch >7.0
 
@@ -102,13 +88,13 @@ class LibPCLConan(ConanFile):
                         wildcard_file, "__ballot(",
                         "__ballot_sync(0xFFFFFFFF,", strict=False)
 
-        # Use our own FindFLANN which take care of conan..
-        os.remove(
-            os.path.join(
-                pcl_source_dir,
-                'cmake',
-                'Modules',
-                'FindFLANN.cmake'))
+        # # Use our own FindFLANN which take care of conan..
+        # os.remove(
+        #     os.path.join(
+        #         pcl_source_dir,
+        #         'cmake',
+        #         'Modules',
+        #         'FindFLANN.cmake'))
 
         # Import common flags and defines
         import common
