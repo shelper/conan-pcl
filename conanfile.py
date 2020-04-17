@@ -177,8 +177,6 @@ class LibPclConan(ConanFile):
             self.requires("libpng/1.6.37")
         if self.options.with_libusb:
             self.requires("libusb/1.0.23")
-        if self.options.with_qhull:
-            self.requires("qhull/7.3.2")
 
         # Module-dependent requirements
         if self.options.module_simulation:
