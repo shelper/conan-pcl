@@ -60,41 +60,15 @@ class LibPCLConan(ConanFile):
             installer.install("zlib1g")
 
     def source(self):
+        # Use our fork, until our MR is merged. see https://github.com/PointCloudLibrary/pcl/pull/3741
         tools.get(
-            "https://github.com/IRCAD-IHU/pcl/archive/pcl-{0}.tar.gz".format(
+            "https://github.com/IRCAD-IHU/pcl/archive/pcl-{0}-sight.tar.gz".format(
                 self.upstream_version))
         os.rename(
-            "pcl-pcl-{0}".format(self.upstream_version),
+            "pcl-pcl-{0}-sight".format(self.upstream_version),
             self.source_subfolder)
 
     def build(self):
-        # pcl_source_dir = os.path.join(
-        #     self.source_folder, self.source_subfolder)
-
-        # # patch for cuda arch >7.0
-
-        # for path, subdirs, names in os.walk(pcl_source_dir,):
-        #     for name in names:
-        #         if fnmatch(name, "*.cu"):
-        #             wildcard_file = os.path.join(path, name)
-
-        #             # Fix package_folder paths
-        #             tools.replace_in_file(
-        #                 wildcard_file, "__all(", "__all_sync(0xFFFFFFFF,", strict=False)
-        #             tools.replace_in_file(
-        #                 wildcard_file, "__any(", "__any_sync(0xFFFFFFFF,", strict=False)
-        #             tools.replace_in_file(
-        #                 wildcard_file, "__ballot(",
-        #                 "__ballot_sync(0xFFFFFFFF,", strict=False)
-
-        # # Use our own FindFLANN which take care of conan..
-        # os.remove(
-        #     os.path.join(
-        #         pcl_source_dir,
-        #         'cmake',
-        #         'Modules',
-        #         'FindFLANN.cmake'))
-
         # Import common flags and defines
         import common
 
