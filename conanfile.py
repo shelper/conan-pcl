@@ -1,13 +1,12 @@
 import os
 
-from fnmatch import fnmatch
 from conans import ConanFile, CMake, tools
 
 
 class LibPCLConan(ConanFile):
     name = "pcl"
-    upstream_version = "1.9.1"
-    package_revision = "-r5"
+    upstream_version = "1.10.1"
+    package_revision = ""
     version = "{0}{1}".format(upstream_version, package_revision)
 
     generators = "cmake"
@@ -23,13 +22,6 @@ class LibPCLConan(ConanFile):
         "cuda=None"
     ]
     default_options = tuple(default_options)
-    exports = [
-        "patches/clang_macos.diff",
-        "patches/kinfu.diff",
-        "patches/pcl_eigen.diff",
-        "patches/pcl_gpu_error.diff",
-        "patches/point_cloud.diff"
-    ]
     url = "https://git.ircad.fr/conan/conan-pcl"
     license = "BSD License"
     description = "The Point Cloud Library is for 2D/3D image and point cloud processing."
@@ -41,18 +33,16 @@ class LibPCLConan(ConanFile):
             del self.options.fPIC
 
     def configure(self):
-        # PCL is not well prepared for c++ standard > 11...
-        del self.settings.compiler.cppstd
 
         if 'CI' not in os.environ:
             os.environ["CONAN_SYSREQUIRES_MODE"] = "verify"
 
     def requirements(self):
         self.requires("common/1.0.2@sight/stable")
-        self.requires("qt/5.12.4-r2@sight/stable")
-        self.requires("eigen/3.3.7-r3@sight/stable")
+        self.requires("qt/5.14.1@sight/stable")
+        self.requires("eigen/3.3.7-r4@sight/stable")
         self.requires("boost/1.69.0-r4@sight/stable")
-        self.requires("vtk/8.2.0-r4@sight/stable")
+        self.requires("vtk/8.2.0-r5@sight/stable")
         self.requires("openni/2.2.0-r5@sight/stable")
         self.requires("flann/1.9.1-r5@sight/stable")
 
@@ -70,46 +60,15 @@ class LibPCLConan(ConanFile):
             installer.install("zlib1g")
 
     def source(self):
+        # Use our fork, until our MR is merged. see https://github.com/PointCloudLibrary/pcl/pull/3741
         tools.get(
-            "https://github.com/PointCloudLibrary/pcl/archive/pcl-{0}.tar.gz".format(
+            "https://github.com/IRCAD-IHU/pcl/archive/pcl-{0}-sight.tar.gz".format(
                 self.upstream_version))
         os.rename(
-            "pcl-pcl-{0}".format(self.upstream_version),
+            "pcl-pcl-{0}-sight".format(self.upstream_version),
             self.source_subfolder)
 
     def build(self):
-        pcl_source_dir = os.path.join(
-            self.source_folder, self.source_subfolder)
-        tools.patch(pcl_source_dir, "patches/clang_macos.diff")
-        tools.patch(pcl_source_dir, "patches/kinfu.diff")
-        tools.patch(pcl_source_dir, "patches/pcl_eigen.diff")
-        tools.patch(pcl_source_dir, "patches/pcl_gpu_error.diff")
-        tools.patch(pcl_source_dir, "patches/point_cloud.diff")
-
-        # patch for cuda arch >7.0
-
-        for path, subdirs, names in os.walk(pcl_source_dir,):
-            for name in names:
-                if fnmatch(name, "*.cu"):
-                    wildcard_file = os.path.join(path, name)
-
-                    # Fix package_folder paths
-                    tools.replace_in_file(
-                        wildcard_file, "__all(", "__all_sync(0xFFFFFFFF,", strict=False)
-                    tools.replace_in_file(
-                        wildcard_file, "__any(", "__any_sync(0xFFFFFFFF,", strict=False)
-                    tools.replace_in_file(
-                        wildcard_file, "__ballot(",
-                        "__ballot_sync(0xFFFFFFFF,", strict=False)
-
-        # Use our own FindFLANN which take care of conan..
-        os.remove(
-            os.path.join(
-                pcl_source_dir,
-                'cmake',
-                'Modules',
-                'FindFLANN.cmake'))
-
         # Import common flags and defines
         import common
 
