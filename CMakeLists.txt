@@ -4,4 +4,6 @@ project(cmake_wrapper)
 include(conanbuildinfo.cmake)
 conan_basic_setup()
 
+set(FLANN_LIBRARY ${CONAN_LIBS_FLANN})
+
 add_subdirectory(source_subfolder)
