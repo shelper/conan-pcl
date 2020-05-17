@@ -8,7 +8,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class LibPclConan(ConanFile):
     name = "pcl"
-    version = "1.11.0-dev"  # TODO: change later
+    version = "1.11.0"  # TODO: change later
     description = "The Point Cloud Library is a standalone, large scale, open project for 2D/3D image and point cloud processing"
     url = "https://github.com/PointCloudLibrary/pcl"
     homepage = "http://www.pointclouds.org/"
@@ -63,7 +63,7 @@ class LibPclConan(ConanFile):
         "with_vtk": [True, False]
     }
     default_options = {
-        "shared": True,
+        "shared": False,
         "fPIC": True,
         # TODO: choose which modules are enabled by default
         "module_2d": True,
@@ -116,7 +116,7 @@ class LibPclConan(ConanFile):
         "type": "git",
         "subfolder": _source_subfolder,
         "url": "https://github.com/PointCloudLibrary/pcl.git",
-        "revision": "master"  # TODO: change later
+        "revision": "pcl-1.11.0"  # TODO: change later
     }
 
     def config_options(self):
