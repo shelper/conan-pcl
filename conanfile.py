@@ -9,7 +9,9 @@ from conans.errors import ConanInvalidConfiguration
 class LibPclConan(ConanFile):
     name = "pcl"
     version = "1.11.0"  # TODO: change later
-    description = "The Point Cloud Library is a standalone, large scale, open project for 2D/3D image and point cloud processing"
+    description = (
+        "The Point Cloud Library is a standalone, large scale, open project for 2D/3D image and point cloud processing"
+    )
     url = "https://github.com/PointCloudLibrary/pcl"
     homepage = "http://www.pointclouds.org/"
     license = "BSD-3-Clause"
@@ -60,7 +62,7 @@ class LibPclConan(ConanFile):
         "with_qt": [True, False],
         "with_rssdk": [True, False],
         "with_rssdk2": [True, False],
-        "with_vtk": [True, False]
+        "with_vtk": [True, False],
     }
     default_options = {
         "shared": False,
@@ -72,7 +74,7 @@ class LibPclConan(ConanFile):
         "module_filters": True,
         "module_geometry": True,
         "module_gpu": True,
-        "module_io": True,
+        "module_io": False,
         "module_kdtree": True,
         "module_keypoints": True,
         "module_ml": True,
@@ -96,8 +98,8 @@ class LibPclConan(ConanFile):
         "with_dssdk": False,
         "with_ensenso": False,
         "with_libpng": True,
-        "with_libusb": True,
-        "with_opengl": True,
+        "with_libusb": False,
+        "with_opengl": False,
         "with_openni": False,
         "with_openni2": False,
         "with_pcap": False,
@@ -105,7 +107,7 @@ class LibPclConan(ConanFile):
         "with_qt": False,
         "with_rssdk": False,
         "with_rssdk2": False,
-        "with_vtk": False
+        "with_vtk": False,
     }
 
     _source_subfolder = "source_subfolder"
@@ -116,7 +118,7 @@ class LibPclConan(ConanFile):
         "type": "git",
         "subfolder": _source_subfolder,
         "url": "https://github.com/PointCloudLibrary/pcl.git",
-        "revision": "pcl-1.11.0"  # TODO: change later
+        "revision": "pcl-1.11.0",  # TODO: change later
     }
 
     def config_options(self):
@@ -161,9 +163,7 @@ class LibPclConan(ConanFile):
     def source(self):
         # Make sure PCL can find Conan's Boost no matter the version
         tools.replace_in_file(
-            os.path.join(self._source_subfolder, "PCLConfig.cmake.in"),
-            "find_package(Boost ",
-            "find_package(Boost) #"
+            os.path.join(self._source_subfolder, "PCLConfig.cmake.in"), "find_package(Boost ", "find_package(Boost) #"
         )
 
     def requirements(self):
@@ -266,6 +266,4 @@ class LibPclConan(ConanFile):
         self.cpp_info.libs = tools.collect_libs(self)
 
         version_short = ".".join(self.version.split(".")[:2])
-        self.cpp_info.includedirs = [
-            "include/pcl-{}".format(version_short)
-        ]
+        self.cpp_info.includedirs = ["include/pcl-{}".format(version_short)]
