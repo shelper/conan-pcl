@@ -1,2 +1,0 @@
-include:
-  - remote: 'https://git.ircad.fr/conan/conan/raw/dev/gitlab-ci/jobs/all-jobs-cuda.yml'
