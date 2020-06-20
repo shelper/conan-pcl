@@ -265,5 +265,6 @@ class LibPclConan(ConanFile):
         self.cpp_info.names["cmake_find_package_multi"] = "PCL"
         self.cpp_info.libs = tools.collect_libs(self)
 
-        version_short = ".".join(self.version.split(".")[:2])
-        self.cpp_info.includedirs = ["include/pcl-{}".format(version_short)]
+        if self.settings.os != "Android":
+            version_short = ".".join(self.version.split(".")[:2])
+            self.cpp_info.includedirs = ["include/pcl-{}".format(version_short)]
