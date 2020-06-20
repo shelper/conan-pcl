@@ -65,7 +65,7 @@ class LibPclConan(ConanFile):
         "with_vtk": [True, False],
     }
     default_options = {
-        "shared": False,
+        "shared": True,
         "fPIC": True,
         # TODO: choose which modules are enabled by default
         "module_2d": True,
@@ -74,7 +74,7 @@ class LibPclConan(ConanFile):
         "module_filters": True,
         "module_geometry": True,
         "module_gpu": True,
-        "module_io": False,
+        "module_io": True,
         "module_kdtree": True,
         "module_keypoints": True,
         "module_ml": True,
@@ -98,8 +98,8 @@ class LibPclConan(ConanFile):
         "with_dssdk": False,
         "with_ensenso": False,
         "with_libpng": True,
-        "with_libusb": False,
-        "with_opengl": False,
+        "with_libusb": False,  # android has to be false
+        "with_opengl": False,  # android has to be false
         "with_openni": False,
         "with_openni2": False,
         "with_pcap": False,
@@ -118,7 +118,7 @@ class LibPclConan(ConanFile):
         "type": "git",
         "subfolder": _source_subfolder,
         "url": "https://github.com/PointCloudLibrary/pcl.git",
-        "revision": "pcl-1.11.0",  # TODO: change later
+        "revision": "-".join([name, version]),
     }
 
     def config_options(self):
@@ -265,5 +265,5 @@ class LibPclConan(ConanFile):
         self.cpp_info.names["cmake_find_package_multi"] = "PCL"
         self.cpp_info.libs = tools.collect_libs(self)
 
-        version_short = ".".join(self.version.split(".")[:2])
-        self.cpp_info.includedirs = ["include/pcl-{}".format(version_short)]
+        # version_short = ".".join(self.version.split(".")[:2])
+        # self.cpp_info.includedirs = ["include/pcl-{}".format(version_short)]
