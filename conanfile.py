@@ -104,3 +104,7 @@ class LibPCLConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+
+        if self.settings.os != "Android":
+            version_short = ".".join(self.version.split(".")[:2])
+            self.cpp_info.includedirs = ["include/pcl-{}".format(version_short)]
