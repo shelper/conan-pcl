@@ -38,6 +38,7 @@ class LibPCLConan(ConanFile):
         self.requires("boost/1.72.0")
         self.requires("eigen/3.3.7")
         self.requires("flann/1.9.1")
+        self.requires("libpng/1.6.37")
         # self.requires("common/1.0.2")  # package from https://git.ircad.fr/conan/conan-common
         # self.requires("openni/2.2.0")  #
         # self.requires("qt/5.14.1")
@@ -62,11 +63,13 @@ class LibPCLConan(ConanFile):
         cmake.definitions["BUILD_ml"] = "ON"
         cmake.definitions["PCL_SHARED_LIBS"] = "ON"
         cmake.definitions["BUILD_sample_consensus"] = "ON"
-        cmake.definitions["PCL_BUILD_WITH_BOOST_DYNAMIC_LINKING_WIN32"] = "ON"
+        cmake.definitions["PCL_BUILD_WITH_BOOST_DYNAMIC_LINKING_WIN32"] = self.options["boost"].shared
+        cmake.definitions["PCL_BUILD_WITH_FLANN_DYNAMIC_LINKING_WIN32"] = self.options["flann"].shared
         cmake.definitions["BUILD_common"] = "ON"
         cmake.definitions["BUILD_tools"] = "OFF"
         cmake.definitions["BUILD_apps"] = "OFF"
         cmake.definitions["BUILD_examples"] = "OFF"
+        cmake.definitions["WITH_LIBPNG"] = "ON"
         cmake.definitions["WITH_PCAP"] = "OFF"
         cmake.definitions["WITH_DAVIDSDK"] = "OFF"
         cmake.definitions["WITH_ENSENSO"] = "OFF"
@@ -74,7 +77,7 @@ class LibPCLConan(ConanFile):
         cmake.definitions["WITH_OPENNI2"] = "OFF"
         cmake.definitions["WITH_RSSDK"] = "OFF"
         cmake.definitions["WITH_RSSDK2"] = "OFF"
-        cmake.definitions["WITH_DSSK"] = "OFF"
+        cmake.definitions["WITH_DSSDK"] = "OFF"
         cmake.definitions["WITH_LIBUSB"] = "OFF"
         cmake.definitions["WITH_OPENGL"] = "OFF"
         cmake.definitions["WITH_QHULL"] = "OFF"
@@ -89,9 +92,6 @@ class LibPCLConan(ConanFile):
             cmake.definitions["BUILD_visualization"] = "ON"
             cmake.definitions["BUILD_surface"] = "ON"
             cmake.definitions["CUDA_ARCH_BIN"] = "3.0 3.5 3.7 5.0 5.2 6.0 6.1 7.0 7.5"
-
-        if tools.os_info.is_macos:
-            cmake.definitions["BUILD_gpu_features"] = "OFF"
 
         if tools.os_info.is_windows:
             cmake.definitions["CUDA_PROPAGATE_HOST_FLAGS"] = "ON"
