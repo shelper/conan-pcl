@@ -160,12 +160,6 @@ class LibPclConan(ConanFile):
         if self.options.module_visualization:
             raise ConanInvalidConfiguration("Module 'visualization' is not supported yet")
 
-    def source(self):
-        # Make sure PCL can find Conan's Boost no matter the version
-        tools.replace_in_file(
-            os.path.join(self._source_subfolder, "PCLConfig.cmake.in"), "find_package(Boost ", "find_package(Boost) #"
-        )
-
     def requirements(self):
         # Mandatory requirements
         self.requires("boost/1.72.0")
